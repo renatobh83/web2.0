@@ -18,7 +18,7 @@ const AppRoutes = () => {
 						</Route>
 						{/* <Route path="/atendimento" element={<Atendimento />}>
 							<Route path=":ticketId" element={<Chat />} />
-						</Route> */}
+							</Route> */}
 					</>
 				) : (
 					<Route path="*" element={<Navigate to="/login" />} />
