@@ -82,7 +82,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			setIsSuporte(data);
 			setIsAdmin(data);
 			// IMPLEMENTAR SOCKET
-
 			//   socket.emit(`${data.tenantId}:setUserActive`)
 			//   socket.close()
 			toast.success("Login realizado com sucesso!");
