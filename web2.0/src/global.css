@@ -1,0 +1,7 @@
+.ticketNotAnswered {
+    border-left: 5px solid #ffbf00 !important; /* substitua $amber pelo valor de cor desejado */
+  }
+
+  .ticketBorder {
+    border-left: 5px solid #212121 !important;
+  }

@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import {
 	Box,
 	Container,
@@ -5,7 +6,6 @@ import {
 } from "@mui/material";
 
 import { DrawerHeader, MiniDrawer } from "../components/MainLayoutComponents/Draw";
-import { Outlet } from "react-router-dom";
 
 export const MainLayout = () => {
 

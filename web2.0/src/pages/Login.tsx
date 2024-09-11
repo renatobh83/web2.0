@@ -45,7 +45,7 @@ export const Login = () => {
 							className={`w-full p-3 border rounded focus:outline-none
                   ${form.email ? "border-blue-500" : "border-gray-300"}
                 `}
-							onBlur={() => {} /* validação aqui */}
+							onBlur={() => { } /* validação aqui */}
 						/>
 						<div className="absolute inset-y-0 left-0 flex items-center pl-3">
 							{/* <i className="mdi mdi-email-outline text-blue-500"></i> */}

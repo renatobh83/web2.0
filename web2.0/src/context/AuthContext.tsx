@@ -39,6 +39,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	// const { socket } = useWebSocket()
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(true); // Estado de carregamento
+
+
 	const setIsSuporte = useUserStore(
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		(state: { setIsSuport: any }) => state.setIsSuport,
@@ -84,6 +86,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			// IMPLEMENTAR SOCKET
 			//   socket.emit(`${data.tenantId}:setUserActive`)
 			//   socket.close()
+			console.log('Ota')
 			toast.success("Login realizado com sucesso!");
 			if (data.profile === "admin") {
 				window.location.href = "/";
@@ -97,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 		}
 
 		// localStorage.setItem('token', token);
-		// setIsAuthenticated(true);
+		setIsAuthenticated(true);
 	};
 
 	const logout = () => {
