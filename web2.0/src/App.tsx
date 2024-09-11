@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import { Login } from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
 import { MainLayout } from "./layout/MainLayout";
+import { Dasboard } from "./pages/Dasboard";
 
 const AppRoutes = () => {
 	const { isAuthenticated } = useAuth();
@@ -14,7 +15,7 @@ const AppRoutes = () => {
 				{!isAuthenticated ? (
 					<>
 						<Route path="/" element={<MainLayout />}>
-							{/* <Route index element={<Dasboard />} /> */}
+							<Route index element={<Dasboard />} />
 						</Route>
 						{/* <Route path="/atendimento" element={<Atendimento />}>
 							<Route path=":ticketId" element={<Chat />} />
