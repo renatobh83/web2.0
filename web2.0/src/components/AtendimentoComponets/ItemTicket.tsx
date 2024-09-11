@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { formatDistance, parseJSON } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Avatar, Badge, Button, Icon, List, ListItemButton, Tooltip } from '@mui/material' // Substitua por Quasar se estiver utilizando Quasar para React
-import { CircleAlert, CircleCheckBig, CircleGaugeIcon, Delete, PlayIcon, SendIcon, StarIcon } from 'lucide-react';
+import { Avatar, Badge, List, ListItem } from '@mui/material'
+import { PlayIcon } from 'lucide-react';
 import classNames from 'classnames';
 import { useAtendimentoTicketStore } from '../../store/atendimentoTicket';
 
 
 export interface Ticket {
+    lastMessage: ReactNode;
     id: number;
     name: string;
     contact: { name: string };
@@ -75,19 +76,57 @@ export const ItemTicket: React.FC<Props> = ({
 
 
     return (
-        <List sx={{ width: '100%', maxWidth: 370, bgcolor: 'background.paper' }} className={ticketClass}>
-
+        <ListItem disablePadding={true} sx={{ paddingBottom: 2 }}>
             {ticket.status === 'pending' || (buscaTicket && ticket.status === 'pending') ? (
-                <ListItemButton onClick={() => console.log('Abrir atendimento')}>
-                    <Avatar sx={{ width: 24, height: 24 }} >{ticket.unreadMessages && (
+                <button>
+                    <Avatar sx={{ width: 50, height: 50 }} >
+                        {ticket.unreadMessages && (
+                            <Badge
+                                badgeContent={ticket.unreadMessages}
+                                color="secondary"
+                                className="mr-1"
+                            />
+                        )}
+                        <PlayIcon />
+                    </Avatar>
+                </button>
+
+            ) : (
+                <Avatar sx={{ width: 50, height: 50 }} src={ticket.profilePicUrl}>
+                    {ticket.unreadMessages && (
                         <Badge
                             badgeContent={ticket.unreadMessages}
                             color="secondary"
                             className="mr-1"
                         />
-                    )}</Avatar>
-                </ListItemButton>) : (<div>Atendimento ja iniciado</div>)}
-        </List >
+                    )}
+                </Avatar>)}
+            <div className="pl-2 flex-1">
+                <div className="flex justify-between items-center">
+                    <span className="font-bold truncate ">{ticket.name || ticket.contact.name}</span>
+                    <span className="text-xs text-gray-500">
+                        {dataInWords(ticket.lastMessageAt, ticket.updatedAt)}
+                    </span>
+                </div>
+                <div className="max-w-[15em] text-sm block overflow-hidden whitespace-pre-wrap max-h-[1.5rem]">{ticket.lastMessage}</div>
+                <div className="flex justify-between items-center mt-1">
+                    <div className="flex items-center space-x-1">
+                        <span className={`text-xs font-bold ${ticket.whatsapp ? 'text-blue-600' : ''}`}>
+                            {ticket.whatsapp && ticket.whatsapp.name}
+                        </span>
+                        {/* <Icon className="w-5 h-5">{`img:${ticket.channel}-logo.png`}</Icon> */}
+                    </div>
+                    <span className="text-xs font-bold">#{ticket.id}</span>
+                </div>
+                <div className="text-xs text-gray-600">
+                    Usuário: {ticket.username}
+                </div>
+                <div className="text-xs text-gray-600">
+                    Fila: {ticket.queue || obterNomeFila(ticket)}
+                </div>
+            </div>
+        </ListItem>
+
     );
 };
 

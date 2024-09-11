@@ -9,7 +9,7 @@ import {
     Badge,
     Box, Button,
     Container, Divider,
-    Drawer, ListItem,
+    Drawer, List, ListItem,
     Menu,
     MenuItem,
     Popover, Switch, Tab, Tabs, Toolbar,
@@ -56,7 +56,7 @@ function a11yProps(index: number, name: string) {
     };
 }
 
-const drawerWidth = 350;
+const drawerWidth = 380;
 
 export const Atendimento = () => {
 
@@ -496,15 +496,17 @@ export const Atendimento = () => {
 
 
                         )}
-                        <TabPanel value={tabTickets} index={0}>
-                            {mensagens
-                                .filter(mensagem => mensagem.status === tabTicketsStatus)
-                                .map(mensagem => (
-                                    <ItemTicket key={mensagem.id}
-                                        ticket={mensagem}
-                                        abrirChatContato={() => { }}
-                                    />
-                                ))}
+                        <TabPanel value={tabTickets} index={0} >
+                            <List disablePadding={true} sx={{ width: '100%', maxWidth: 370, bgcolor: 'background.paper', padding: 0 }} >
+                                {mensagens
+                                    .filter(mensagem => mensagem.status === tabTicketsStatus)
+                                    .map(mensagem => (
+                                        <ItemTicket key={mensagem.id}
+                                            ticket={mensagem}
+                                            abrirChatContato={() => { }}
+                                        />
+                                    ))}
+                            </List>
                         </TabPanel>
                         <TabPanel value={tabTickets} index={1}>
                             {tabTickets === 1 && tabTicketsStatus === 'open' && (
