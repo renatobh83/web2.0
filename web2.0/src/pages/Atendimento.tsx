@@ -79,7 +79,7 @@ function a11yProps(index: number, name: string) {
 	};
 }
 
-const drawerWidth = 380;
+const drawerWidth = 350;
 
 export const Atendimento = () => {
 
@@ -96,7 +96,7 @@ export const Atendimento = () => {
 	// UseState
 	const [mensagens, setMensagens] = useState<Ticket[]>([]);
 	const [tabTicketsStatus, setTabTicketsStatus] = useState("pending");
-	const [hideDrawer, seHideDrawer] = useState(true);
+	const [hideDrawer, setHideDrawer] = useState(true);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [anchorEl2, setAnchorEl2] = useState(null);
 	const [grupoAtivo, setGrupoAtivo] = useState("disabled");
@@ -255,14 +255,34 @@ export const Atendimento = () => {
 		BuscarTicketFiltro();
 	}, [pesquisaTickets, BuscarTicketFiltro]);
 
+	const handleResize = () => {
+		if (window.innerWidth < 700) {
+			setHideDrawer(false);
+		} else {
+			setHideDrawer(true);
+		}
+	};
 
+	// useEffect to add event listener on mount and remove it on unmount
+	useEffect(() => {
+		// Set the initial value on component mount
+		handleResize();
+
+		// Listen to window resize events
+		window.addEventListener('resize', handleResize);
+
+		// Cleanup listener on component unmount
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
 	// HTML
 	return (
 		<Container maxWidth={false} disableGutters>
 			<Box sx={{ display: "flex" }}>
 				<Drawer
 					sx={{
-						width: drawerWidth,
+						width: 'drawerWidth',
 						flexShrink: 0,
 						"& .MuiDrawer-paper": {
 							width: drawerWidth,

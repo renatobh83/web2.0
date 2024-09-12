@@ -4,6 +4,7 @@ import { DeleteIcon, EditIcon, ExpandIcon, Import, SearchIcon } from "lucide-rea
 import { useCallback, useEffect, useState } from "react";
 import { ListarContatos } from "../../services/contatos";
 import { useContatosStore } from "../../store/contatos";
+import { ContatoModal } from "./ContatoModal";
 const CustomTableContainer = styled(TableContainer)(({ theme }) => ({
     // Customize styles with Tailwind CSS classes
     padding: theme.spacing(2),
@@ -250,6 +251,7 @@ export const Contatos: React.FC<{
                 rowsPerPage={pagination.rowsPerPage}
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
+            <ContatoModal />
         </div>)
 }
 
