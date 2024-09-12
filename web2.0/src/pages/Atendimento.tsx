@@ -42,7 +42,8 @@ import {
 	ItemTicket,
 	Ticket,
 } from "../components/AtendimentoComponets/ItemTicket";
-import { UsuarioModal } from "./Usuario/ModalUsuarios";
+import { ModalUsuario } from "./Usuario/ModalUsuarios";
+import { useUsuarioStore } from "../store/usuarios";
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -81,28 +82,34 @@ function a11yProps(index: number, name: string) {
 const drawerWidth = 380;
 
 export const Atendimento = () => {
+
+	const navigate = useNavigate();
+
+	// Stores
 	const resetTickets = useAtendimentoTicketStore((s) => s.resetTickets);
 	const setHasMore = useAtendimentoTicketStore((s) => s.setHasMore);
 	const loadTickets = useAtendimentoTicketStore((s) => s.loadTickets);
 	const tickets = useAtendimentoTicketStore((s) => s.tickets);
+	const { setUsuarioSelecionado, toggleModalUsuario } = useUsuarioStore()
+
+
+	// UseState
 	const [mensagens, setMensagens] = useState<Ticket[]>([]);
-
 	const [tabTicketsStatus, setTabTicketsStatus] = useState("pending");
-	const navigate = useNavigate();
 	const [hideDrawer, seHideDrawer] = useState(true);
-
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [anchorEl2, setAnchorEl2] = useState(null);
-	const profile = localStorage.getItem("profile");
-	const username = localStorage.getItem("username");
-	const usuario = JSON.parse(localStorage.getItem("usuario"));
 	const [grupoAtivo, setGrupoAtivo] = useState("disabled");
-
 	const [contadorUniversal, setContadorUniversal] = useState("enabled");
 	const [tabTickets, setTabTickets] = useState(0);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [abriModalUsuario, setAbriModalUsuario] = useState(false);
 
+
+	// Load localStorage
+	const profile = localStorage.getItem("profile");
+	const username = localStorage.getItem("username");
+	const usuario = JSON.parse(localStorage.getItem("usuario"));
 	const [switchStates, setSwitchStates] = useState(() => {
 		const savedStates = JSON.parse(localStorage.getItem("filtrosAtendimento"));
 		return {
@@ -116,6 +123,9 @@ export const Atendimento = () => {
 		return savedData ? JSON.parse(savedData) : { status: [], outrosCampos: "" };
 	});
 
+
+
+	// Metodos
 	const handleClickMenu = (event: any) => {
 		if (event.currentTarget.id === "btn-admin") {
 			setAnchorEl(event.currentTarget);
@@ -194,21 +204,7 @@ export const Atendimento = () => {
 		handleSearch(value); // Chama a função debounced
 	};
 
-	useEffect(() => {
-		localStorage.setItem("filtrosAtendimento", JSON.stringify(pesquisaTickets));
-	}, [pesquisaTickets]);
 
-	useEffect(() => {
-		useAtendimentoTicketStore.setState({
-			redirectToChat: (ticketId: string) => {
-				navigate(`/atendimento/${ticketId}`);
-			},
-		});
-	}, []);
-
-	useEffect(() => {
-		setMensagens(tickets);
-	}, [tickets]);
 	const consultarTickets = async (paramsInit = {}) => {
 		const params = {
 			...pesquisaTickets,
@@ -230,10 +226,37 @@ export const Atendimento = () => {
 		// setLoading(false);
 	}, [pesquisaTickets, resetTickets]);
 
+	const handleEditarUsuario = () => {
+		setUsuarioSelecionado(usuario)
+		toggleModalUsuario()
+
+	}
+
+
+	// UseEffcts
+
+	useEffect(() => {
+		localStorage.setItem("filtrosAtendimento", JSON.stringify(pesquisaTickets));
+	}, [pesquisaTickets]);
+
+	useEffect(() => {
+		useAtendimentoTicketStore.setState({
+			redirectToChat: (ticketId: string) => {
+				navigate(`/atendimento/${ticketId}`);
+			},
+		});
+	}, []);
+
+	useEffect(() => {
+		setMensagens(tickets);
+	}, [tickets]);
+
 	useEffect(() => {
 		BuscarTicketFiltro();
 	}, [pesquisaTickets, BuscarTicketFiltro]);
 
+
+	// HTML
 	return (
 		<Container maxWidth={false} disableGutters>
 			<Box sx={{ display: "flex" }}>
@@ -280,14 +303,14 @@ export const Atendimento = () => {
 											<div className="w-36 max-w-36">
 												<ListItem
 													className="hover:bg-zinc-200 cursor-pointer font-semibold"
-													onClick={() => setAbriModalUsuario(true)}
+													onClick={handleEditarUsuario}
 												>
 													Perfil
 												</ListItem>
 												<Divider />
 												<ListItem
 													className="hover:bg-zinc-200 cursor-pointer font-semibold"
-													// onClick={() => { handleClose(); efetuarLogout(); }}
+												// onClick={() => { handleClose(); efetuarLogout(); }}
 												>
 													Sair
 												</ListItem>
@@ -521,7 +544,7 @@ export const Atendimento = () => {
 										<ItemTicket
 											key={mensagem.id}
 											ticket={mensagem}
-											abrirChatContato={() => {}}
+											abrirChatContato={() => { }}
 										/>
 									))}
 							</List>
@@ -541,17 +564,9 @@ export const Atendimento = () => {
 				</Drawer>
 				<Outlet />
 			</Box>
-			<UsuarioModal
-				modalUsuario={abriModalUsuario}
+			<ModalUsuario
 				isProfile={true}
-				fecharModal={() => setAbriModalUsuario(false)}
-				usuarioEdicao={{
-					id: usuario.userId,
-					email: usuario.email,
-					tenantId: usuario.tenantId,
-					username: usuario.username,
-					profile: usuario.profile,
-				}}
+
 			/>
 		</Container>
 	);

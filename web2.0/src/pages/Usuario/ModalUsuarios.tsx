@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	Dialog,
 	Card,
@@ -14,68 +14,117 @@ import {
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useUserStore } from "../../store/user";
+import { useUsuarioStore } from "../../store/usuarios";
+import { toast } from "sonner";
+import { CriarUsuario, UpdateUsuarios } from "../../services/user";
 
-interface Usuario {
-	id: string | null;
-	name: string | null;
+export interface Usuario {
+	id: string | undefined;
+	name?: string | null;
 	email?: string;
 	password?: string;
 	profile: string | null;
 	tenantId?: string | null;
+	queues?: any;
+	userId?: string;
 }
 
-export const UsuarioModal: React.FC<{
-	modalUsuario: boolean;
-	fecharModal: () => void;
+export const ModalUsuario: React.FC<{
 	isProfile?: boolean;
-	usuarioEdicao?: Usuario;
-}> = ({ modalUsuario, fecharModal, isProfile = false, usuarioEdicao }) => {
+}> = ({ isProfile = false }) => {
+
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<Usuario>();
+		setValue, reset
+	} = useForm<Usuario>({
+		defaultValues: {
+			id: "",
+			name: "",
+			email: "",
+			password: "",
+			profile: "",
+			tenantId: ""
+		},
+	});
+
+	const usuarioSelecionado = useUsuarioStore(s => s.usuarioSelecionado)
+	const editarUsuario = useUsuarioStore(s => s.editarUsuario)
+	const criarUsuario = useUsuarioStore(s => s.criarUsuario)
+	const modalUsuario = useUsuarioStore(s => s.modalUsuario)
+	const toggleModalUsuario = useUsuarioStore(s => s.toggleModalUsuario)
 
 	const [isPwd, setIsPwd] = useState(true);
 	const isAdmin = useUserStore((s) => s.isAdmin);
-	const [usuario, setUsuario] = useState<Usuario>({
-		id: "",
-		name: "",
-		email: "",
-		password: "",
-		profile: "",
-	});
 
 	const optionsProfile = [
 		{ value: "user", label: "Usuário" },
 		{ value: "super", label: "Supervisor" },
 		{ value: "admin", label: "Administrador" },
 	];
+	useEffect(() => {
+		if (!modalUsuario) {
+			reset(); // Redefine para os valores padrão
+		}
+	}, [modalUsuario, reset]);
+	useEffect(() => {
+		console.log('load')
+	}, []);
 
 	useEffect(() => {
-		if (usuarioEdicao?.id) {
-			setUsuario(() => {
-				return {
-					...usuarioEdicao,
-					id: usuarioEdicao?.id,
-					name: usuarioEdicao?.username,
-					profile: usuarioEdicao?.profile,
-				};
-			});
-		}
-	}, [usuarioEdicao]);
-	const handleUsuario = (data: Usuario) => {
-		console.log("Salvar usuário:", data, isAdmin);
-		if (usuario.id) {
-			const { email, id, name, tenantId, password, profile } = usuario;
 
-			const params = { email, id, name, tenantId, password, profile };
-			console.log(params);
+		if (usuarioSelecionado?.userId && isProfile) {
+			setValue("id", usuarioSelecionado.userId);
+			setValue("name", usuarioSelecionado.username || usuarioSelecionado.name);
+			setValue("profile", usuarioSelecionado.profile);
+			setValue("email", usuarioSelecionado.email);
+			setValue("tenantId", usuarioSelecionado.tenantId)
+		}
+		if (usuarioSelecionado?.id) {
+			setValue("id", usuarioSelecionado.userId);
+			setValue("name", usuarioSelecionado.username || usuarioSelecionado.name);
+			setValue("profile", usuarioSelecionado.profile);
+			setValue("email", usuarioSelecionado.email);
+			setValue("tenantId", usuarioSelecionado.tenantId)
+		}
+		// 	setValue("id", usuarioSelecionado.userId);
+		// 	setValue("name", usuarioSelecionado.username || usuarioSelecionado.name);
+		// 	setValue("profile", usuarioSelecionado.profile);
+		// 	setValue("email", usuarioSelecionado.email);
+		// 	setValue("tenantId", usuarioSelecionado.tenantId)
+		// }
+	}, [usuarioSelecionado, setValue]);
+	const handleUsuario = async (dataForm: Usuario) => {
+		if (usuarioSelecionado) {
+			const { email, id, name, tenantId, password, profile } = dataForm
+			const params = { email, id, name, tenantId, password, profile }
+			const { data } = await UpdateUsuarios(usuarioSelecionado.id, params)
+			editarUsuario(data)
+			toast.success('Usuario editado com suscesso', {
+				position: 'top-right'
+			})
+			reset()
+			toggleModalUsuario()
+		} else {
+			try {
+				const { data } = await CriarUsuario(dataForm)
+				criarUsuario(data)
+				toast.success('Usuario Criado com suscesso', {
+					position: 'top-right'
+				})
+				reset()
+				toggleModalUsuario()
+			} catch (error) {
+				toast.error(`${error?.data.error}`, {
+					position: 'top-right'
+				})
+			}
 		}
 	};
 
 	return (
-		<Dialog open={modalUsuario} onClose={fecharModal} fullWidth maxWidth="sm">
+		<Dialog open={modalUsuario} fullWidth maxWidth="sm">
 			<Card className="w-full">
 				<CardContent className="space-y-4">
 					<div className="text-xl font-semibold">
@@ -89,8 +138,7 @@ export const UsuarioModal: React.FC<{
 							{...register("name", { required: true })}
 							error={!!errors.name}
 							helperText={errors.name ? "Nome é obrigatório" : ""}
-							value={usuario.name}
-							onChange={(e) => setUsuario({ ...usuario, name: e.target.value })}
+
 						/>
 						<TextField
 							label="E-mail"
@@ -99,10 +147,6 @@ export const UsuarioModal: React.FC<{
 							{...register("email", { required: true })}
 							error={!!errors.email}
 							helperText={errors.email ? "E-mail é obrigatório" : ""}
-							value={usuario.email}
-							onChange={(e) =>
-								setUsuario({ ...usuario, email: e.target.value })
-							}
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-4">
@@ -114,10 +158,6 @@ export const UsuarioModal: React.FC<{
 							{...register("password", { required: true })}
 							error={!!errors.password}
 							helperText={errors.password ? "Senha é obrigatória" : ""}
-							value={usuario.password}
-							onChange={(e) =>
-								setUsuario({ ...usuario, password: e.target.value })
-							}
 							InputProps={{
 								endAdornment: (
 									<IconButton onClick={() => setIsPwd(!isPwd)}>
@@ -128,10 +168,9 @@ export const UsuarioModal: React.FC<{
 						/>
 						<Select
 							label="Perfil"
-							value={usuario.profile}
-							onChange={(e) =>
-								setUsuario({ ...usuario, profile: e.target.value as string })
-							}
+							{...register("profile", { required: "Perfil é obrigatório" })}
+							error={!!errors.profile}
+							value={isProfile ? usuarioSelecionado?.profile : undefined}
 							fullWidth
 							disabled={isProfile}
 							variant="outlined"
@@ -145,7 +184,7 @@ export const UsuarioModal: React.FC<{
 					</div>
 				</CardContent>
 				<CardActions className="justify-end">
-					<Button variant="contained" color="error" onClick={fecharModal}>
+					<Button variant="contained" color="error" onClick={toggleModalUsuario}>
 						Sair
 					</Button>
 					<Button
