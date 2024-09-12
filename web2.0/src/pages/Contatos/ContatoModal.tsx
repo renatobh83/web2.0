@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid2 } from "@mui/material"
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material"
 import Grid from '@mui/material/Grid2';
 import { useForm } from "react-hook-form";
 interface Contato {
@@ -37,7 +37,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* Número */}
-                        <Grid item xs={12} md={6}>
+                        <Grid sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}>
                             <TextField
                                 fullWidth
                                 label="Número"
@@ -56,7 +56,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* Email */}
-                        <Grid item xs={12}>
+                        <Grid sx={{ flexGrow: 1, width: '100%' }}>
                             <TextField
                                 fullWidth
                                 label="E-mail"
@@ -74,7 +74,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* CPF/CNPJ */}
-                        <Grid item xs={12} md={6}>
+                        <Grid sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}>
                             <TextField
                                 fullWidth
                                 label="CPF/CNPJ"
@@ -87,7 +87,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* Data de Aniversário */}
-                        <Grid item xs={12} md={6}>
+                        <Grid sx={{ flexGrow: 1, width: { xs: '100%', md: '50%' } }}>
                             <TextField
                                 fullWidth
                                 label="Data de Aniversário"
@@ -100,7 +100,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* Primeiro Nome */}
-                        <Grid item xs={12} md={4}>
+                        <Grid sx={{ flexGrow: 1, width: { xs: '100%', md: '33.33%' } }}>
                             <TextField
                                 fullWidth
                                 label="Primeiro Nome"
@@ -113,7 +113,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* Sobrenome */}
-                        <Grid item xs={12} md={4}>
+                        <Grid sx={{ flexGrow: 1, width: { xs: '100%', md: '33.33%' } }}>
                             <TextField
                                 fullWidth
                                 label="Sobrenome"
@@ -126,7 +126,7 @@ export const ContatoModal: React.FC = () => {
                         </Grid>
 
                         {/* Empresa */}
-                        <Grid item xs={12} md={4}>
+                        <Grid sx={{ flexGrow: 1, width: { xs: '100%', md: '33.33%' } }}>
                             <TextField
                                 fullWidth
                                 label="Empresa"
@@ -138,19 +138,17 @@ export const ContatoModal: React.FC = () => {
                             />
                         </Grid>
                     </Grid>
-                    <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-                        Enviar
-                    </button>
+                    <DialogActions>
+                        <Button
+                            color="primary">
+                            Cancelar
+                        </Button>
+                        <Button color="primary">
+                            Confirmar
+                        </Button>
+                    </DialogActions>
                 </form>
             </DialogContent>
-            <DialogActions>
-                <Button
-                    color="primary">
-                    Cancelar
-                </Button>
-                <Button color="primary">
-                    Confirmar
-                </Button>
-            </DialogActions>
+
         </Dialog>)
 }
