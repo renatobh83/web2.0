@@ -40,15 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(true); // Estado de carregamento
 
-
-	const setIsSuporte = useUserStore(
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		(state: { setIsSuport: any }) => state.setIsSuport,
-	);
-	const setIsAdmin = useUserStore(
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		(state: { setIsAdmin: any }) => state.setIsAdmin,
-	);
+	const setUserState = useUserStore((s) => s.setUserState);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -81,15 +73,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 					JSON.stringify(data.configs.filtrosAtendimento),
 				);
 			}
-			setIsSuporte(data);
-			setIsAdmin(data);
+			setUserState(data);
+
 			// IMPLEMENTAR SOCKET
 			//   socket.emit(`${data.tenantId}:setUserActive`)
 			//   socket.close()
-			console.log('Ota')
+
 			toast.success("Login realizado com sucesso!");
 			if (data.profile === "admin") {
-				window.location.href = "/";
+				// window.location.href = "/";
 				// rota dash
 			} else {
 				window.location.href = "/";

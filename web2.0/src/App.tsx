@@ -6,6 +6,7 @@ import { MainLayout } from "./layout/MainLayout";
 import { Dasboard } from "./pages/Dasboard";
 import { Atendimento } from "./pages/Atendimento";
 import { Chat } from "./pages/Chat";
+import { Usuarios } from "./pages/Usuario";
 
 const AppRoutes = () => {
 	const { isAuthenticated } = useAuth();
@@ -22,6 +23,7 @@ const AppRoutes = () => {
 						<Route path="/atendimento" element={<Atendimento />}>
 							<Route path=":ticketId" element={<Chat />} />
 						</Route>
+						<Route path="/usuarios" element={<Usuarios />} />
 					</>
 				) : (
 					<Route path="*" element={<Navigate to="/login" />} />

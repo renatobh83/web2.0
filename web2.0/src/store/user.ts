@@ -4,8 +4,7 @@ interface User {
 	isAdmin: boolean;
 	token: string | null;
 	isSuporte: boolean;
-	setIsAdmin: (data: { profile: string }) => void;
-	setIsSuport: (data: any) => void;
+	setUserState: (data: { email: string; profile: string }) => void;
 }
 
 export const useUserStore = create<User>((set) => ({
@@ -13,23 +12,26 @@ export const useUserStore = create<User>((set) => ({
 	token: null,
 	isSuporte: false,
 
-	setIsAdmin: (data) =>
-		set((state) => ({
-			isAdmin: !!(state.isSuporte || data.profile === "admin"),
-		})),
+	// Nova action que lida com ambos os estados
+	setUserState: (data) => {
+		const domains = ["@"]; // Domínios autorizados
+		let Suporte = false;
 
-	setIsSuport: (data) => {
-		const domains = ["@"]; // Exemplo: Verifica se o email contém '@'
-		let authorized = false;
+		// Verifica se o email contém o domínio autorizado
 		// biome-ignore lint/complexity/noForEach: <explanation>
 		domains.forEach((domain) => {
 			if (
 				data?.email.toLocaleLowerCase().indexOf(domain.toLocaleLowerCase()) !==
 				-1
 			) {
-				authorized = true;
+				Suporte = true;
 			}
 		});
-		set({ isSuporte: authorized }); // Atualiza o estado de isSuporte
+
+		// Atualiza ambos os estados de uma vez só
+		set(() => ({
+			isSuporte: Suporte,
+			isAdmin: !!(Suporte || data.profile === "admin"),
+		}));
 	},
 }));
