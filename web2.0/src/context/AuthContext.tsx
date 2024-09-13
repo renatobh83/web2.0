@@ -10,11 +10,13 @@ import {
 import { toast } from "sonner";
 import { RealizarLogin } from "../services/login.js";
 import { useUserStore } from "../store/user.js";
+import { socketIO } from "../utils/socket.js";
 
 interface AuthContextType {
 	isAuthenticated: boolean;
 	login: (form: any) => void;
 	logout: () => void;
+
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const login = async (form: any) => {
 		try {
 			const { data } = await RealizarLogin(form);
-			//   const socket = socketIO()
+
 			localStorage.setItem("token", JSON.stringify(data.token));
 			localStorage.setItem("username", data.username);
 			localStorage.setItem("profile", data.profile);
@@ -76,8 +78,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			setUserState(data);
 
 			// IMPLEMENTAR SOCKET
-			//   socket.emit(`${data.tenantId}:setUserActive`)
-			//   socket.close()
+			const ws = socketIO()
+			ws.emit(`${data.tenantId}:setUserActive`)
+			ws.disconnect()
+			ws.close()
 
 			toast.success("Login realizado com sucesso!");
 			if (data.profile === "admin") {

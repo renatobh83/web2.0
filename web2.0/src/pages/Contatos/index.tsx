@@ -238,7 +238,7 @@ export const Contatos: React.FC<{
 
 	useEffect(() => {
 		listarContatos();
-	}, []);
+	}, [listarContatos]);
 
 	return (
 		<div className="container p-4">

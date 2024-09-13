@@ -26,6 +26,7 @@ export const MainLayout = () => {
 	const updateNotificationsP = useNotificationsStore(
 		(s) => s.updateNotificationsP,
 	);
+	const { notifications, notificationsP } = useNotificationsStore()
 	const listarWhatsapps = useCallback(async () => {
 		const { data } = await ListarWhatsapps();
 		loadWhatsApps(data);
@@ -83,7 +84,7 @@ export const MainLayout = () => {
 			// this.$store.commit('SET_HAS_MORE', data.hasMore)
 			// console.log(this.notifications)
 		} catch (err) {
-			toast.error("Algum problema ao consultar tickets 5");
+			toast.error("Algum problema ao consultar tickets ");
 			console.error(err);
 		}
 	}, [updateNotificationsP, updateNotifications]);
