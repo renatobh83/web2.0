@@ -8,7 +8,8 @@ import { ListarFilas } from "../../services/filas";
 import { ListarUsuarios } from "../../services/user";
 import { ItemStatusChannel } from "./ItemStatusChannel";
 import { ModalQrCode } from "./ModalQrCode";
-import { DeleteWhatsappSession, RequestNewQrCode, StartWhatsappSession } from "../../services/sessoesWhatsapp";
+import { DeleteWhatsappSession, ListarWhatsapps, RequestNewQrCode, StartWhatsappSession } from "../../services/sessoesWhatsapp";
+import { ModalWhatsapp } from "./ModalWhatsApp";
 
 export const IndexSessoesWhatsapp: React.FC = () => {
     const userProfile = localStorage.getItem('profile') ?? "user"
@@ -21,6 +22,7 @@ export const IndexSessoesWhatsapp: React.FC = () => {
     const [abrirModalQR, setAbrirModalQR] = useState(false)
     const whatsApps = useWhatsappStore(s => s.whatsApps)
     const updateWhatsApps = useWhatsappStore(s => s.updateWhatsApps)
+    const loadWhatsApps = useWhatsappStore((s) => s.loadWhatsApps);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     const handleStartWhatsAppSession = useCallback(async (whatsAppId) => {
@@ -50,9 +52,9 @@ export const IndexSessoesWhatsapp: React.FC = () => {
             console.error(error)
         }
         setLoading(false)
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, 1000);
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     }, [])
     const handleDisconectWhatsSession = (whatsAppId) => {
         setLoading(true)
@@ -86,6 +88,11 @@ export const IndexSessoesWhatsapp: React.FC = () => {
         setAbrirModalQR(true)
 
     }
+    const listarWhatsapps = useCallback(async () => {
+        const { data } = await ListarWhatsapps();
+        loadWhatsApps(data);
+    }, [loadWhatsApps]);
+
     const onCloseModalQr = () => {
         setAbrirModalQR(false)
     }
@@ -93,7 +100,7 @@ export const IndexSessoesWhatsapp: React.FC = () => {
     useEffect(() => {
         listarFila()
         listarUsuario()
-        console.log(whatsApps)
+        listarWhatsapps()
     }, [])
     return (
         <>
@@ -116,7 +123,7 @@ export const IndexSessoesWhatsapp: React.FC = () => {
                     </Card>
                     <div className="flex gap-5 ">
                         {whatsApps.map((item) => (
-                            <Card key={item.id} sx={{ maxWidth: 300, backgroundColor: "#ccc4", padding: 2 }}>
+                            <Card key={item.id} sx={{ maxWidth: 350, backgroundColor: "#ccc4", padding: 2 }}>
                                 <CardContent>
                                     <Box sx={{ display: 'flex', placeItems: 'center', gap: 3 }} >
                                         <Avatar src={item.type} />
@@ -246,6 +253,7 @@ export const IndexSessoesWhatsapp: React.FC = () => {
                         onGenerateNewQrCode={handleRequestNewQrCode} />
                 )
             }
+            <ModalWhatsapp />
         </>
     )
 }

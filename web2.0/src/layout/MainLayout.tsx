@@ -13,8 +13,13 @@ import { ConsultarTickets } from "../services/tickets";
 import { toast } from "sonner";
 import { useNotificationsStore } from "../store/notifications";
 
+
+import { useSocketInitial } from "../hooks/useSocketInitial"
+
 export const MainLayout = () => {
 	const loadWhatsApps = useWhatsappStore((s) => s.loadWhatsApps);
+
+	useSocketInitial()
 	const updateNotifications = useNotificationsStore(
 		(s) => s.updateNotifications,
 	);
@@ -87,6 +92,7 @@ export const MainLayout = () => {
 		listarWhatsapps();
 		listarConfiguracoes();
 		consultarTickets();
+
 	}, [listarWhatsapps, listarConfiguracoes, consultarTickets]);
 
 	return (

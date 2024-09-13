@@ -84,6 +84,7 @@ export const Contatos: React.FC<{
 	const listarContatos = useCallback(async () => {
 		setLoading(true);
 		const { data } = await ListarContatos(params);
+
 		setParams((prev) => {
 			return {
 				...prev,
@@ -91,6 +92,7 @@ export const Contatos: React.FC<{
 			};
 		});
 		loadContacts(data.contacts);
+		setLoading(false)
 	}, []);
 
 	const handleSaveTicket = async (contact: { id: any }, channel: any) => {
@@ -297,12 +299,12 @@ export const Contatos: React.FC<{
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{contatos
+						{!loading && contatos
 							.filter((row) => row.name.includes(filter))
 							.slice(
 								pagination.page * pagination.rowsPerPage,
 								pagination.page * pagination.rowsPerPage +
-									pagination.rowsPerPage,
+								pagination.rowsPerPage,
 							)
 							.map((row) => (
 								<TableRow key={row.id}>
