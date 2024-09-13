@@ -82,7 +82,6 @@ function a11yProps(index: number, name: string) {
 const drawerWidth = 350;
 
 export const Atendimento = () => {
-
 	const navigate = useNavigate();
 
 	// Stores
@@ -90,8 +89,7 @@ export const Atendimento = () => {
 	const setHasMore = useAtendimentoTicketStore((s) => s.setHasMore);
 	const loadTickets = useAtendimentoTicketStore((s) => s.loadTickets);
 	const tickets = useAtendimentoTicketStore((s) => s.tickets);
-	const { setUsuarioSelecionado, toggleModalUsuario } = useUsuarioStore()
-
+	const { setUsuarioSelecionado, toggleModalUsuario } = useUsuarioStore();
 
 	// UseState
 	const [mensagens, setMensagens] = useState<Ticket[]>([]);
@@ -104,7 +102,6 @@ export const Atendimento = () => {
 	const [tabTickets, setTabTickets] = useState(0);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [abriModalUsuario, setAbriModalUsuario] = useState(false);
-
 
 	// Load localStorage
 	const profile = localStorage.getItem("profile");
@@ -122,8 +119,6 @@ export const Atendimento = () => {
 		const savedData = localStorage.getItem("filtrosAtendimento");
 		return savedData ? JSON.parse(savedData) : { status: [], outrosCampos: "" };
 	});
-
-
 
 	// Metodos
 	const handleClickMenu = (event: any) => {
@@ -204,7 +199,6 @@ export const Atendimento = () => {
 		handleSearch(value); // Chama a função debounced
 	};
 
-
 	const consultarTickets = async (paramsInit = {}) => {
 		const params = {
 			...pesquisaTickets,
@@ -220,18 +214,16 @@ export const Atendimento = () => {
 		}
 	};
 	const BuscarTicketFiltro = useCallback(async () => {
-		// resetTickets();
+		resetTickets();
 		// setLoading(true);
 		await consultarTickets(pesquisaTickets);
 		// setLoading(false);
 	}, [pesquisaTickets, resetTickets]);
 
 	const handleEditarUsuario = () => {
-		setUsuarioSelecionado(usuario)
-		toggleModalUsuario()
-
-	}
-
+		setUsuarioSelecionado(usuario);
+		toggleModalUsuario();
+	};
 
 	// UseEffcts
 
@@ -269,11 +261,11 @@ export const Atendimento = () => {
 		handleResize();
 
 		// Listen to window resize events
-		window.addEventListener('resize', handleResize);
+		window.addEventListener("resize", handleResize);
 
 		// Cleanup listener on component unmount
 		return () => {
-			window.removeEventListener('resize', handleResize);
+			window.removeEventListener("resize", handleResize);
 		};
 	}, []);
 	// HTML
@@ -282,7 +274,7 @@ export const Atendimento = () => {
 			<Box sx={{ display: "flex" }}>
 				<Drawer
 					sx={{
-						width: 'drawerWidth',
+						width: "drawerWidth",
 						flexShrink: 0,
 						"& .MuiDrawer-paper": {
 							width: drawerWidth,
@@ -330,7 +322,7 @@ export const Atendimento = () => {
 												<Divider />
 												<ListItem
 													className="hover:bg-zinc-200 cursor-pointer font-semibold"
-												// onClick={() => { handleClose(); efetuarLogout(); }}
+													// onClick={() => { handleClose(); efetuarLogout(); }}
 												>
 													Sair
 												</ListItem>
@@ -564,7 +556,7 @@ export const Atendimento = () => {
 										<ItemTicket
 											key={mensagem.id}
 											ticket={mensagem}
-											abrirChatContato={() => { }}
+											abrirChatContato={() => {}}
 										/>
 									))}
 							</List>
@@ -584,10 +576,7 @@ export const Atendimento = () => {
 				</Drawer>
 				<Outlet />
 			</Box>
-			<ModalUsuario
-				isProfile={true}
-
-			/>
+			<ModalUsuario isProfile={true} />
 		</Container>
 	);
 };
