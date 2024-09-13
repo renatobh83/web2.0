@@ -8,6 +8,7 @@ import { Atendimento } from "./pages/Atendimento";
 import { Chat } from "./pages/Chat";
 import { Usuarios } from "./pages/Usuario";
 import { Contatos } from "./pages/Contatos";
+import { IndexSessoesWhatsapp } from "./pages/sessaoWhatsapp";
 
 const AppRoutes = () => {
 	const { isAuthenticated } = useAuth();
@@ -22,6 +23,8 @@ const AppRoutes = () => {
 							<Route index element={<Dasboard />} />
 							<Route path="/usuarios" element={<Usuarios />} />
 							<Route path="/contatos" element={<Contatos isChatContact={false} />} />
+							<Route path="/sessoes" element={<IndexSessoesWhatsapp />} />
+
 						</Route>
 						<Route path="/atendimento" element={<Atendimento />}>
 							<Route path=":ticketId" element={<Chat />} />

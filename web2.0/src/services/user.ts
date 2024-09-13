@@ -1,10 +1,9 @@
 import request from "./request";
 
-export function ListarUsuarios(params: any) {
+export function ListarUsuarios() {
   return request({
     url: "/users/",
     method: "get",
-    params,
   });
 }
 

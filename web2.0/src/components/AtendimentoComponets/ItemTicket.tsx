@@ -1,7 +1,8 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import type React from "react";
+import { type ReactNode, useEffect, useState } from "react"
 import { formatDistance, parseJSON } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Avatar, Badge, List, ListItem } from "@mui/material";
+import { Avatar, Badge, ListItem } from "@mui/material";
 import { PlayIcon } from "lucide-react";
 import classNames from "classnames";
 import { useAtendimentoTicketStore } from "../../store/atendimentoTicket";
@@ -74,7 +75,7 @@ export const ItemTicket: React.FC<Props> = ({
 	return (
 		<ListItem disablePadding={true} sx={{ paddingBottom: 2 }}>
 			{ticket.status === "pending" ||
-			(buscaTicket && ticket.status === "pending") ? (
+				(buscaTicket && ticket.status === "pending") ? (
 				// biome-ignore lint/a11y/useButtonType: <explanation>
 				<button>
 					<Avatar sx={{ width: 50, height: 50 }}>

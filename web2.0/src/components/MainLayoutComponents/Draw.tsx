@@ -169,21 +169,21 @@ export const MiniDrawer: React.FC<{ children: React.ReactNode }> = ({
 						<Menu />
 					</IconButton>
 					<div className="flex flex-1 items-center justify-end space-x-4 mr-1">
-						<Tooltip title="Notificações" arrow>
+						<Tooltip title="Notificações" arrow placement="left">
 							<Popover className="relative">
 								<PopoverButton className="relative p-2 text-gray-500 rounded-full hover:bg-gray-200">
 									<BellIcon className="h-6 w-6" />
-									{parseInt(notifications.count) +
-										parseInt(notificationsP.count) >
+									{Number.parseInt(notifications.count) +
+										Number.parseInt(notificationsP.count) >
 										0 && (
-										<>
-											<span className="absolute top-0 right-0 block h-1 w-1 rounded-full  ring-white bg-red-400" />
-											<span className="absolute -top-1 -right-1 bg-red-400 text-white text-xs font-bold px-2 py-1 rounded-full">
-												{parseInt(notifications.count) +
-													parseInt(notificationsP.count)}
-											</span>
-										</>
-									)}
+											<>
+												<span className="absolute top-0 right-0 block h-1 w-1 rounded-full  ring-white bg-red-400" />
+												<span className="absolute -top-1 -right-1 bg-red-400 text-white text-xs font-bold px-2 py-1 rounded-full">
+													{Number.parseInt(notifications.count) +
+														Number.parseInt(notificationsP.count)}
+												</span>
+											</>
+										)}
 								</PopoverButton>
 								<Transition
 									as={Fragment}
@@ -194,11 +194,11 @@ export const MiniDrawer: React.FC<{ children: React.ReactNode }> = ({
 									leaveFrom="opacity-100 translate-y-0"
 									leaveTo="opacity-0 translate-y-1"
 								>
-									<PopoverPanel className="absolute mt-3 z-10 w-[220px] right-0 bg-white shadow-lg rounded-md">
+									<PopoverPanel className="absolute mt-3 z-10 min-w-[300px] right-0 bg-white shadow-lg rounded-md">
 										<div>
-											{parseInt(notifications.count) +
-												parseInt(notificationsP.count) ===
-											0 ? (
+											{Number.parseInt(notifications.count) +
+												Number.parseInt(notificationsP.count) ===
+												0 ? (
 												<div className="p-4 text-sm text-gray-500 mr-10">
 													Nada de novo por aqui!
 												</div>
@@ -212,11 +212,34 @@ export const MiniDrawer: React.FC<{ children: React.ReactNode }> = ({
 															Clientes pendentes na fila
 														</span>
 													</div>
+
 													<div className="container mx-auto">
-														<TicketList
+														<div className="p-4 gap-2 flex flex-col cursor-pointer">
+															{notificationsP.tickets.map(ticket => (
+																<div key={ticket.id} className="border-b-2 m-1 flex gap-2">
+																	<div className="flex-shrink-0 w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+																		<img
+																			src={ticket.profilePicUrl}
+																			alt={ticket.name}
+																			className="w-full h-full object-cover"
+																		/>
+																	</div>
+																	<div className="flex-1 ">
+																		<div className="text-sm font-bold min-h-0 ">
+																			{ticket.name}
+																		</div>
+																		<div className="max-w-[20em] pt-0 overflow-hidden text-xs max-h-[3rem]">
+																			<b className="text-xs mr-1">Mensagem:</b>
+																			{ticket.lastMessage}
+																		</div>
+																	</div>
+																</div>
+															))}
+														</div>
+														{/* <TicketList max-w-[15em] block overflow-hidden whitespace-pre-wrap max-h-[1.5rem]
 															notifications={notificationsP}
-															abrirAtendimentoExistente={() => {}}
-														/>
+															abrirAtendimentoExistente={() => { }}
+														/> */}
 													</div>
 												</div>
 											)}
@@ -283,7 +306,7 @@ export const MiniDrawer: React.FC<{ children: React.ReactNode }> = ({
 										{/* Opção de Sair */}
 										<li
 											className="p-2 cursor-pointer hover:bg-gray-100"
-											//onClick={handleLogout}
+										//onClick={handleLogout}
 										>
 											<div className="px-4 flex gap-4">
 												<LogOutIcon size="20" />

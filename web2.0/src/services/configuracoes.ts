@@ -1,10 +1,9 @@
 import request from "./request";
 
-export function ListarConfiguracoes(params: any) {
+export function ListarConfiguracoes() {
   return request({
     url: "/settings/",
     method: "get",
-    params,
   });
 }
 

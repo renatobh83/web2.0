@@ -24,7 +24,7 @@ export const MainLayout = () => {
 	const listarWhatsapps = useCallback(async () => {
 		const { data } = await ListarWhatsapps();
 		loadWhatsApps(data);
-	}, []);
+	}, [loadWhatsApps]);
 
 	const listarConfiguracoes = useCallback(async () => {
 		const { data } = await ListarConfiguracoes();
@@ -81,13 +81,13 @@ export const MainLayout = () => {
 			toast.error("Algum problema ao consultar tickets 5");
 			console.error(err);
 		}
-	}, []);
+	}, [updateNotificationsP, updateNotifications]);
 
 	useEffect(() => {
 		listarWhatsapps();
 		listarConfiguracoes();
 		consultarTickets();
-	}, []);
+	}, [listarWhatsapps, listarConfiguracoes, consultarTickets]);
 
 	return (
 		<Container maxWidth={false} disableGutters>

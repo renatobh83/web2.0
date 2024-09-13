@@ -102,6 +102,7 @@ export const Atendimento = () => {
 	const [tabTickets, setTabTickets] = useState(0);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [abriModalUsuario, setAbriModalUsuario] = useState(false);
+	const [loading, setLoading] = useState(false)
 
 	// Load localStorage
 	const profile = localStorage.getItem("profile");
@@ -125,11 +126,10 @@ export const Atendimento = () => {
 		if (event.currentTarget.id === "btn-admin") {
 			setAnchorEl(event.currentTarget);
 			return;
+			// biome-ignore lint/style/noUselessElse: <explanation>
 		} else event.currentTarget.id === "filtro-avancado";
-		{
-			setAnchorEl2(event.currentTarget);
-			return;
-		}
+		setAnchorEl2(event.currentTarget);
+		return;
 	};
 	const handleCloseMenu = () => {
 		setAnchorEl(null);
@@ -215,9 +215,9 @@ export const Atendimento = () => {
 	};
 	const BuscarTicketFiltro = useCallback(async () => {
 		resetTickets();
-		// setLoading(true);
+		setLoading(true);
 		await consultarTickets(pesquisaTickets);
-		// setLoading(false);
+		setLoading(false);
 	}, [pesquisaTickets, resetTickets]);
 
 	const handleEditarUsuario = () => {
@@ -254,7 +254,14 @@ export const Atendimento = () => {
 			setHideDrawer(true);
 		}
 	};
+	function Loading() {
+		return (
+			<div className="flex h-full items-center justify-center">
 
+				<h2>🌀 Carregando...</h2>
+			</div>
+		)
+	}
 	// useEffect to add event listener on mount and remove it on unmount
 	useEffect(() => {
 		// Set the initial value on component mount
@@ -268,6 +275,7 @@ export const Atendimento = () => {
 			window.removeEventListener("resize", handleResize);
 		};
 	}, []);
+
 	// HTML
 	return (
 		<Container maxWidth={false} disableGutters>
@@ -322,7 +330,7 @@ export const Atendimento = () => {
 												<Divider />
 												<ListItem
 													className="hover:bg-zinc-200 cursor-pointer font-semibold"
-													// onClick={() => { handleClose(); efetuarLogout(); }}
+												// onClick={() => { handleClose(); efetuarLogout(); }}
 												>
 													Sair
 												</ListItem>
@@ -330,6 +338,7 @@ export const Atendimento = () => {
 										</Popover>
 									</div>
 									<Tooltip title="Home" arrow>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 										<button onClick={() => navigate("/")}>
 											<Home className="text-black" />
 										</button>
@@ -503,6 +512,7 @@ export const Atendimento = () => {
 								onChange={(event, newValue) => setTabTicketsStatus(newValue)}
 							>
 								<Tab label="Aberto" value="open" disableRipple />
+
 								<Badge color="error" className="absolute left-0 top-0" />
 								<Tab label="Pendente" value="pending" disableRipple />
 								<Badge color="error" className="absolute left-0 top-0" />
@@ -535,43 +545,45 @@ export const Atendimento = () => {
 								value={tabTicketsStatus}
 								onChange={(event, newValue) => setTabTicketsStatus(newValue)}
 							>
-								<Tab label="Aberto" value="open" disableRipple />
+								<Tab label="Abertos" value="open" disableRipple />
+
+
 								<Tab label="Pendente" value="pending" disableRipple />
 								<Tab label="Fechado" value="closed" disableRipple />
 							</Tabs>
 						)}
-						<TabPanel value={tabTickets} index={0}>
-							<List
-								disablePadding={true}
-								sx={{
-									width: "100%",
-									maxWidth: 370,
-									bgcolor: "background.paper",
-									padding: 0,
-								}}
-							>
-								{mensagens
-									.filter((mensagem) => mensagem.status === tabTicketsStatus)
-									.map((mensagem) => (
-										<ItemTicket
-											key={mensagem.id}
-											ticket={mensagem}
-											abrirChatContato={() => {}}
-										/>
-									))}
-							</List>
-						</TabPanel>
-						<TabPanel value={tabTickets} index={1}>
-							{tabTickets === 1 && tabTicketsStatus === "open" && (
-								<div>open grupo</div>
-							)}
-							{tabTickets === 1 && tabTicketsStatus === "pending" && (
-								<div>pendentes grupo</div>
-							)}
-							{tabTickets === 1 && tabTicketsStatus === "closed" && (
-								<div>closed grupo</div>
-							)}
-						</TabPanel>
+						{loading ? (<Loading />) : (
+							<><TabPanel value={tabTickets} index={0}>
+								<List
+									disablePadding={true}
+									sx={{
+										width: "100%",
+										maxWidth: 370,
+										bgcolor: "background.paper",
+										padding: 0,
+									}}
+								>
+									{mensagens
+										.filter((mensagem) => mensagem.status === tabTicketsStatus)
+										.map((mensagem) => (
+											<ItemTicket
+												key={mensagem.id}
+												ticket={mensagem}
+												abrirChatContato={() => { }} />
+										))}
+								</List>
+							</TabPanel><TabPanel value={tabTickets} index={1}>
+									{tabTickets === 1 && tabTicketsStatus === "open" && (
+										<div>open grupo</div>
+									)}
+									{tabTickets === 1 && tabTicketsStatus === "pending" && (
+										<div>pendentes grupo</div>
+									)}
+									{tabTickets === 1 && tabTicketsStatus === "closed" && (
+										<div>closed grupo</div>
+									)}
+								</TabPanel></>
+						)}
 					</Box>
 				</Drawer>
 				<Outlet />
